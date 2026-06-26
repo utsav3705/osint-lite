@@ -1,0 +1,10 @@
+Flask>=3.0
+requests>=2.31
+python-whois>=0.9
+reportlab>=4.0
+pandas>=2.1
+SQLAlchemy>=2.0
+beautifulsoup4>=4.12
+pdfplumber>=0.10
+spacy>=3.7
+lxml>=5.0

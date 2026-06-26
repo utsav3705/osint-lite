@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+{% block title %}OSINT-Pro — Investigation Dashboard{% endblock %}
+
+{% block content %}
+<!-- ── Hero Section ──────────────────────────────────────── -->
+<section class="hero-section">
+    <div class="container">
+        <div class="hero-content text-center">
+            <div class="hero-icon-wrapper">
+                <i class="bi bi-shield-lock-fill hero-icon"></i>
+            </div>
+            <h1 class="hero-title">OSINT-Pro Investigation Platform</h1>
+            <p class="hero-subtitle">Professional Due Diligence & Open Source Intelligence</p>
+            <div class="hero-divider"></div>
+        </div>
+    </div>
+</section>
+
+<!-- ── Investigation Form ────────────────────────────────── -->
+<section class="form-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-xl-7">
+                <div class="investigation-card">
+                    <div class="card-header-custom">
+                        <i class="bi bi-search me-2"></i>New Investigation
+                    </div>
+                    <div class="card-body-custom">
+                        <form action="{{ url_for('search') }}" method="POST" id="investigation-form">
+
+                            <!-- Name -->
+                            <div class="form-floating-group">
+                                <div class="input-icon-wrapper">
+                                    <i class="bi bi-person-fill input-icon"></i>
+                                    <input type="text" class="form-control custom-input" id="input-name"
+                                           name="name" placeholder="Full Name" autocomplete="off">
+                                    <label for="input-name" class="custom-label">Full Name</label>
+                                </div>
+                            </div>
+
+                            <!-- Username -->
+                            <div class="form-floating-group">
+                                <div class="input-icon-wrapper">
+                                    <i class="bi bi-at input-icon"></i>
+                                    <input type="text" class="form-control custom-input" id="input-username"
+                                           name="username" placeholder="Username" autocomplete="off">
+                                    <label for="input-username" class="custom-label">Username</label>
+                                </div>
+                            </div>
+
+                            <!-- Email -->
+                            <div class="form-floating-group">
+                                <div class="input-icon-wrapper">
+                                    <i class="bi bi-envelope-fill input-icon"></i>
+                                    <input type="email" class="form-control custom-input" id="input-email"
+                                           name="email" placeholder="Email Address" autocomplete="off">
+                                    <label for="input-email" class="custom-label">Email Address</label>
+                                </div>
+                            </div>
+
+                            <!-- Company -->
+                            <div class="form-floating-group">
+                                <div class="input-icon-wrapper">
+                                    <i class="bi bi-building input-icon"></i>
+                                    <input type="text" class="form-control custom-input" id="input-company"
+                                           name="company" placeholder="Company / Organization" autocomplete="off">
+                                    <label for="input-company" class="custom-label">Company / Organization</label>
+                                </div>
+                            </div>
+
+                            <!-- Website -->
+                            <div class="form-floating-group">
+                                <div class="input-icon-wrapper">
+                                    <i class="bi bi-globe2 input-icon"></i>
+                                    <input type="text" class="form-control custom-input" id="input-website"
+                                           name="website" placeholder="Website / Domain" autocomplete="off">
+                                    <label for="input-website" class="custom-label">Website / Domain</label>
+                                </div>
+                            </div>
+
+                            <!-- Submit -->
+                            <button type="submit" class="btn btn-investigate" id="btn-investigate">
+                                <span class="btn-text">
+                                    <i class="bi bi-search me-2"></i>Launch Investigation
+                                </span>
+                                <span class="btn-loading d-none">
+                                    <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                                    Investigating…
+                                </span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Feature cards -->
+                <div class="row g-3 mt-4 feature-row">
+                    <div class="col-md-4">
+                        <div class="feature-card">
+                            <i class="bi bi-github feature-icon"></i>
+                            <h6>GitHub Intel</h6>
+                            <p>Profile analysis and repository data</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-card">
+                            <i class="bi bi-globe feature-icon"></i>
+                            <h6>Domain WHOIS</h6>
+                            <p>Registrar, age, and ownership data</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-card">
+                            <i class="bi bi-shield-exclamation feature-icon"></i>
+                            <h6>Risk Engine V2</h6>
+                            <p>Weighted risk scoring with 7 factors</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-card">
+                            <i class="bi bi-person-lines-fill feature-icon"></i>
+                            <h6>Alias Generator</h6>
+                            <p>Username permutations from names</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-card">
+                            <i class="bi bi-share feature-icon"></i>
+                            <h6>Social Discovery</h6>
+                            <p>Multi-platform profile detection</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-card">
+                            <i class="bi bi-newspaper feature-icon"></i>
+                            <h6>Media Screening</h6>
+                            <p>Adverse news and negative mentions</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-card">
+                            <i class="bi bi-building feature-icon"></i>
+                            <h6>Company Intel</h6>
+                            <p>Corporate domain and WHOIS data</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-card">
+                            <i class="bi bi-robot feature-icon"></i>
+                            <h6>AI Summary</h6>
+                            <p>Automated investigator narrative</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-card">
+                            <i class="bi bi-file-earmark-pdf feature-icon"></i>
+                            <h6>PDF Reports</h6>
+                            <p>Professional exportable reports</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

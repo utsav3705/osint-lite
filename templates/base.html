@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="OSINT-Pro — Professional Due Diligence & Open Source Intelligence Platform">
+    <title>{% block title %}OSINT-Pro{% endblock %}</title>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <!-- ── Navbar ────────────────────────────────────────── -->
+    <nav class="navbar navbar-expand-lg sticky-top" id="main-navbar">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="{{ url_for('index') }}">
+                <i class="bi bi-shield-lock-fill brand-icon"></i>
+                <span class="brand-text">OSINT<span class="brand-highlight">-Pro</span></span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navContent">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navContent">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('index') }}">
+                            <i class="bi bi-search me-1"></i>Investigate
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('dashboard') }}">
+                            <i class="bi bi-speedometer2 me-1"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('cases') }}">
+                            <i class="bi bi-folder2-open me-1"></i>Cases
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('court_analyzer') }}">
+                            <i class="bi bi-file-earmark-ruled me-1"></i>Court Analyzer
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" id="dark-mode-toggle" title="Toggle Dark/Light Mode">
+                            <i class="bi bi-moon-stars-fill"></i>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#aboutModal">
+                            <i class="bi bi-info-circle me-1"></i>About
+                        </a>
+                    </li>
+                    {% if session.get('logged_in') %}
+                    <li class="nav-item">
+                        <a class="nav-link nav-link-logout" href="{{ url_for('logout') }}">
+                            <i class="bi bi-box-arrow-right me-1"></i>Logout
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('login') }}">
+                            <i class="bi bi-person-lock me-1"></i>Login
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ── Flash Messages ────────────────────────────────── -->
+    <div class="container mt-3">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle-fill me-2"></i>{{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+    </div>
+
+    <!-- ── Page Content ──────────────────────────────────── -->
+    <main class="flex-grow-1">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- ── Footer ────────────────────────────────────────── -->
+    <footer id="main-footer">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-md-6 text-center text-md-start">
+                    <span class="footer-brand">
+                        <i class="bi bi-shield-lock-fill me-1"></i>OSINT-Pro
+                    </span>
+                    <span class="footer-copy">&copy; 2026 &mdash; Professional Due Diligence & Intelligence Platform</span>
+                </div>
+                <div class="col-md-6 text-center text-md-end mt-2 mt-md-0">
+                    <span class="footer-note">All data sourced from publicly available information.</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- ── About Modal ───────────────────────────────────── -->
+    <div class="modal fade" id="aboutModal" tabindex="-1" aria-labelledby="aboutModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content about-modal">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title" id="aboutModalLabel">
+                        <i class="bi bi-shield-lock-fill me-2"></i>About OSINT-Pro
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>OSINT-Pro is a professional due diligence platform for investigators and analysts. It aggregates publicly available intelligence from multiple sources and generates comprehensive investigation reports.</p>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h6 class="mt-3 mb-2"><i class="bi bi-gear-fill me-1"></i> Intelligence Modules</h6>
+                            <ul class="about-features">
+                                <li><i class="bi bi-github me-2"></i>GitHub Intelligence</li>
+                                <li><i class="bi bi-person-badge me-2"></i>Username Enumeration</li>
+                                <li><i class="bi bi-globe me-2"></i>Domain / WHOIS Intelligence</li>
+                                <li><i class="bi bi-shield-exclamation me-2"></i>Risk Scoring Engine V2</li>
+                                <li><i class="bi bi-file-earmark-pdf me-2"></i>PDF Report Export</li>
+                            </ul>
+                        </div>
+                        <div class="col-md-6">
+                            <h6 class="mt-3 mb-2"><i class="bi bi-stars me-1"></i> Pro Modules</h6>
+                            <ul class="about-features">
+                                <li><i class="bi bi-person-lines-fill me-2"></i>Alias Generator</li>
+                                <li><i class="bi bi-share me-2"></i>Social Discovery</li>
+                                <li><i class="bi bi-newspaper me-2"></i>Adverse Media Screening</li>
+                                <li><i class="bi bi-building me-2"></i>Company Intelligence</li>
+                                <li><i class="bi bi-file-earmark-ruled me-2"></i>Court Document Analyzer</li>
+                                <li><i class="bi bi-robot me-2"></i>AI Investigator Summary</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Delete Confirmation Modal ──────────────────────── -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-sm">
+            <div class="modal-content about-modal">
+                <div class="modal-header border-0">
+                    <h5 class="modal-title"><i class="bi bi-trash me-2"></i>Confirm Delete</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <p>Are you sure you want to delete this investigation? This cannot be undone.</p>
+                </div>
+                <div class="modal-footer border-0">
+                    <button type="button" class="btn btn-sm btn-outline-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <form id="delete-form" method="POST" style="display:inline">
+                        <button type="submit" class="btn btn-sm btn-danger">
+                            <i class="bi bi-trash me-1"></i>Delete
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Custom JS -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

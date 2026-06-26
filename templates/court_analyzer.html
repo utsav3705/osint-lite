@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% block title %}OSINT-Pro — Court Document Analyzer{% endblock %}
+
+{% block content %}
+<section class="court-section">
+    <div class="container">
+
+        <!-- ── Header ────────────────────────────────────── -->
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">
+                <i class="bi bi-file-earmark-ruled me-2"></i>Court Document Analyzer
+            </h1>
+            <p class="dashboard-subtitle">Upload and analyze PDF court documents for structured intelligence extraction</p>
+            <div class="hero-divider"></div>
+        </div>
+
+        <div class="row g-4">
+            <!-- ── Upload Card ───────────────────────────── -->
+            <div class="col-lg-5">
+                <div class="report-card">
+                    <div class="report-card-header">
+                        <i class="bi bi-cloud-upload me-2"></i>Upload Document
+                    </div>
+                    <div class="report-card-body">
+                        <form method="POST" action="{{ url_for('court_analyzer') }}" enctype="multipart/form-data" id="court-upload-form">
+                            <div class="upload-zone" id="upload-zone">
+                                <i class="bi bi-file-earmark-pdf upload-zone-icon"></i>
+                                <p class="upload-zone-text">Drag & drop a PDF here, or click to browse</p>
+                                <p class="upload-zone-hint">Supported: .pdf (court filings, rulings, opinions)</p>
+                                <input type="file" name="court_pdf" id="court-pdf-input" accept=".pdf" class="upload-input" required>
+                            </div>
+                            <div id="file-name-display" class="file-name-display d-none">
+                                <i class="bi bi-file-earmark-check me-2"></i>
+                                <span id="selected-file-name"></span>
+                            </div>
+                            <button type="submit" class="btn btn-investigate mt-3" id="btn-analyze">
+                                <span class="btn-text">
+                                    <i class="bi bi-cpu me-2"></i>Analyze Document
+                                </span>
+                                <span class="btn-loading d-none">
+                                    <span class="spinner-border spinner-border-sm me-2" role="status"></span>
+                                    Analyzing…
+                                </span>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Results Card ──────────────────────────── -->
+            <div class="col-lg-7">
+                {% if court_data and court_data.parsed %}
+                <div class="report-card">
+                    <div class="report-card-header">
+                        <i class="bi bi-search me-2"></i>Extracted Intelligence
+                    </div>
+                    <div class="report-card-body">
+                        <table class="table report-table">
+                            <tbody>
+                                <tr><td class="label-cell">Case Number</td><td>{{ court_data.case_number }}</td></tr>
+                                <tr><td class="label-cell">Court</td><td>{{ court_data.court }}</td></tr>
+                                <tr><td class="label-cell">Plaintiff</td><td>{{ court_data.plaintiff }}</td></tr>
+                                <tr><td class="label-cell">Defendant</td><td>{{ court_data.defendant }}</td></tr>
+                                <tr><td class="label-cell">Judge</td><td>{{ court_data.judge }}</td></tr>
+                                <tr>
+                                    <td class="label-cell">Dates Found</td>
+                                    <td>
+                                        {% for d in court_data.dates %}
+                                        <span class="badge bg-secondary me-1 mb-1">{{ d }}</span>
+                                        {% endfor %}
+                                        {% if not court_data.dates %}N/A{% endif %}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="label-cell">Monetary Amounts</td>
+                                    <td>
+                                        {% for a in court_data.amounts %}
+                                        <span class="badge bg-warning text-dark me-1 mb-1">{{ a }}</span>
+                                        {% endfor %}
+                                        {% if not court_data.amounts %}N/A{% endif %}
+                                    </td>
+                                </tr>
+                                <tr><td class="label-cell">Verdict / Judgment</td><td>{{ court_data.verdict }}</td></tr>
+                            </tbody>
+                        </table>
+
+                        {% if court_data.text_preview %}
+                        <div class="mt-3">
+                            <h6 class="factors-title"><i class="bi bi-file-text me-1"></i>Document Preview</h6>
+                            <div class="court-preview">{{ court_data.text_preview }}</div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+                {% elif court_data and court_data.error %}
+                <div class="report-card">
+                    <div class="report-card-header">
+                        <i class="bi bi-exclamation-triangle me-2"></i>Error
+                    </div>
+                    <div class="report-card-body">
+                        <div class="no-data-message">
+                            <i class="bi bi-exclamation-circle me-2"></i>{{ court_data.error }}
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <div class="report-card">
+                    <div class="report-card-header">
+                        <i class="bi bi-info-circle me-2"></i>How It Works
+                    </div>
+                    <div class="report-card-body">
+                        <div class="court-how-it-works">
+                            <div class="how-step">
+                                <div class="how-step-num">1</div>
+                                <div>
+                                    <h6>Upload PDF</h6>
+                                    <p>Upload any court filing, ruling, or legal opinion in PDF format.</p>
+                                </div>
+                            </div>
+                            <div class="how-step">
+                                <div class="how-step-num">2</div>
+                                <div>
+                                    <h6>NLP Extraction</h6>
+                                    <p>Our engine uses spaCy NER and pattern matching to extract structured data.</p>
+                                </div>
+                            </div>
+                            <div class="how-step">
+                                <div class="how-step-num">3</div>
+                                <div>
+                                    <h6>Review Findings</h6>
+                                    <p>Case number, parties, judge, dates, amounts, and verdict are extracted.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

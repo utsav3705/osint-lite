@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% block title %}OSINT-Pro — Dashboard{% endblock %}
+
+{% block content %}
+<section class="dashboard-section">
+    <div class="container">
+
+        <!-- ── Dashboard Header ──────────────────────────── -->
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">
+                <i class="bi bi-speedometer2 me-2"></i>Investigation Dashboard
+            </h1>
+            <p class="dashboard-subtitle">Case management overview and quick actions</p>
+            <div class="hero-divider"></div>
+        </div>
+
+        <!-- ── Stats Cards ───────────────────────────────── -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-card-icon bg-blue-glow">
+                        <i class="bi bi-folder2-open"></i>
+                    </div>
+                    <div class="stat-card-info">
+                        <span class="stat-card-number" id="stat-total">{{ stats.total }}</span>
+                        <span class="stat-card-label">Total Cases</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-card-icon bg-red-glow">
+                        <i class="bi bi-exclamation-triangle"></i>
+                    </div>
+                    <div class="stat-card-info">
+                        <span class="stat-card-number" id="stat-high">{{ stats.high_risk }}</span>
+                        <span class="stat-card-label">High Risk</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-card-icon bg-orange-glow">
+                        <i class="bi bi-shield-exclamation"></i>
+                    </div>
+                    <div class="stat-card-info">
+                        <span class="stat-card-number" id="stat-medium">{{ stats.medium_risk }}</span>
+                        <span class="stat-card-label">Medium Risk</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="stat-card">
+                    <div class="stat-card-icon bg-green-glow">
+                        <i class="bi bi-check-circle"></i>
+                    </div>
+                    <div class="stat-card-info">
+                        <span class="stat-card-number" id="stat-low">{{ stats.low_risk }}</span>
+                        <span class="stat-card-label">Low Risk</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ── Quick Actions ─────────────────────────────── -->
+        <div class="row g-4 mb-4">
+            <div class="col-md-4">
+                <a href="{{ url_for('index') }}" class="quick-action-card">
+                    <i class="bi bi-search"></i>
+                    <span>New Investigation</span>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a href="{{ url_for('court_analyzer') }}" class="quick-action-card">
+                    <i class="bi bi-file-earmark-ruled"></i>
+                    <span>Court Document Analyzer</span>
+                </a>
+            </div>
+            <div class="col-md-4">
+                <a href="{{ url_for('cases') }}" class="quick-action-card">
+                    <i class="bi bi-clock-history"></i>
+                    <span>View All Cases</span>
+                </a>
+            </div>
+        </div>
+
+        <!-- ── Recent Investigations ─────────────────────── -->
+        <div class="report-card">
+            <div class="report-card-header d-flex justify-content-between align-items-center">
+                <span><i class="bi bi-clock-history me-2"></i>Recent Investigations</span>
+                <a href="{{ url_for('cases') }}" class="btn btn-sm btn-outline-light">View All</a>
+            </div>
+            <div class="report-card-body">
+                {% if recent_cases %}
+                <div class="table-responsive">
+                    <table class="table report-table cases-table" id="recent-cases-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Subject</th>
+                                <th>Company</th>
+                                <th>Date</th>
+                                <th>Risk</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for case in recent_cases %}
+                            <tr>
+                                <td><span class="case-id">#{{ case.id }}</span></td>
+                                <td><strong>{{ case.subject_name }}</strong></td>
+                                <td>{{ case.company or 'N/A' }}</td>
+                                <td>{{ case.date_created.strftime('%Y-%m-%d') if case.date_created else 'N/A' }}</td>
+                                <td>
+                                    {% set rc = 'risk-low' if case.risk_classification == 'Low' else ('risk-medium' if case.risk_classification == 'Medium' else 'risk-high') %}
+                                    <span class="badge risk-badge {{ rc }}">
+                                        {{ case.risk_score|int }}/100 {{ case.risk_classification }}
+                                    </span>
+                                </td>
+                                <td><span class="badge bg-success">{{ case.status }}</span></td>
+                                <td>
+                                    {% if case.report_path %}
+                                    <a href="{{ url_for('download_report', filename=case.report_path) }}"
+                                       class="btn btn-sm btn-outline-info me-1" title="Download PDF">
+                                        <i class="bi bi-download"></i>
+                                    </a>
+                                    {% endif %}
+                                    <button class="btn btn-sm btn-outline-danger btn-delete-case"
+                                            data-case-id="{{ case.id }}" title="Delete">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="no-data-message">
+                    <i class="bi bi-inbox me-2"></i>
+                    No investigations yet. <a href="{{ url_for('index') }}" class="profile-link">Start your first investigation</a>.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+</section>
+{% endblock %}

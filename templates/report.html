@@ -1,0 +1,471 @@
+{% extends "base.html" %}
+{% block title %}OSINT-Pro — Investigation Report{% endblock %}
+
+{% block content %}
+<section class="report-section">
+    <div class="container">
+
+        <!-- ── Report Header ─────────────────────────────── -->
+        <div class="report-header text-center">
+            <h1 class="report-title">
+                <i class="bi bi-file-earmark-text-fill me-2"></i>Investigation Report
+            </h1>
+            <p class="report-meta">
+                Subject: <strong>{{ subject.name or subject.username or 'N/A' }}</strong>
+                &mdash; Generated {{ "now" | default("today") }}
+            </p>
+            <div class="report-actions">
+                {% if pdf_filename %}
+                <a href="{{ url_for('download_report', filename=pdf_filename) }}" class="btn btn-pdf" id="btn-download-pdf">
+                    <i class="bi bi-file-earmark-pdf-fill me-2"></i>Download PDF
+                </a>
+                {% endif %}
+                <a href="{{ url_for('index') }}" class="btn btn-new-investigation" id="btn-new-investigation">
+                    <i class="bi bi-plus-circle me-2"></i>New Investigation
+                </a>
+                <a href="{{ url_for('dashboard') }}" class="btn btn-new-investigation">
+                    <i class="bi bi-speedometer2 me-2"></i>Dashboard
+                </a>
+            </div>
+        </div>
+
+        <div class="row g-4">
+
+            <!-- ── Subject Information ───────────────────── -->
+            <div class="col-lg-6">
+                <div class="report-card">
+                    <div class="report-card-header">
+                        <i class="bi bi-person-vcard-fill me-2"></i>Subject Information
+                    </div>
+                    <div class="report-card-body">
+                        <table class="table report-table">
+                            <tbody>
+                                <tr><td class="label-cell">Name</td><td>{{ subject.name or 'N/A' }}</td></tr>
+                                <tr><td class="label-cell">Username</td><td>{{ subject.username or 'N/A' }}</td></tr>
+                                <tr><td class="label-cell">Email</td><td>{{ subject.email or 'N/A' }}</td></tr>
+                                <tr><td class="label-cell">Company</td><td>{{ subject.company or 'N/A' }}</td></tr>
+                                <tr><td class="label-cell">Website</td><td>{{ subject.website or 'N/A' }}</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Risk Assessment ───────────────────────── -->
+            <div class="col-lg-6">
+                <div class="report-card risk-card">
+                    <div class="report-card-header">
+                        <i class="bi bi-shield-exclamation me-2"></i>Risk Assessment (V2)
+                    </div>
+                    <div class="report-card-body text-center">
+                        {% set risk_class = 'risk-low' if risk.classification == 'Low' else ('risk-medium' if risk.classification == 'Medium' else 'risk-high') %}
+
+                        <div class="risk-score-display {{ risk_class }}">
+                            <span class="risk-number" id="risk-score-number">{{ risk.score }}</span>
+                            <span class="risk-max">/100</span>
+                        </div>
+
+                        <span class="badge risk-badge {{ risk_class }}">{{ risk.classification }} Risk</span>
+
+                        <div class="progress risk-progress mt-3">
+                            <div class="progress-bar {{ risk_class }}" role="progressbar"
+                                 style="width: {{ risk.score }}%"
+                                 aria-valuenow="{{ risk.score }}" aria-valuemin="0" aria-valuemax="100"
+                                 id="risk-progress-bar">
+                            </div>
+                        </div>
+
+                        {% if risk.factors %}
+                        <div class="risk-factors mt-3 text-start">
+                            <h6 class="factors-title"><i class="bi bi-list-check me-1"></i>Contributing Factors</h6>
+                            <ul class="factors-list">
+                                {% for factor in risk.factors %}
+                                <li>{{ factor }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── AI Investigator Summary ────────────────── -->
+            {% if ai_summary %}
+            <div class="col-12">
+                <div class="report-card ai-summary-card">
+                    <div class="report-card-header">
+                        <i class="bi bi-robot me-2"></i>AI Investigator Summary
+                    </div>
+                    <div class="report-card-body">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <h6 class="ai-section-title"><i class="bi bi-file-text me-2"></i>Executive Summary</h6>
+                                <p class="summary-text">{{ ai_summary.executive_summary }}</p>
+                            </div>
+                            <div class="col-lg-6">
+                                <h6 class="ai-section-title text-danger"><i class="bi bi-flag-fill me-2"></i>Red Flags</h6>
+                                <ul class="ai-list red-flag-list">
+                                    {% for flag in ai_summary.red_flags %}
+                                    <li>{{ flag }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                        <hr class="section-divider">
+                        <div class="row">
+                            <div class="col-lg-6">
+                                <h6 class="ai-section-title"><i class="bi bi-eye me-2"></i>Observations</h6>
+                                <ul class="ai-list">
+                                    {% for obs in ai_summary.observations %}
+                                    <li>{{ obs }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                            <div class="col-lg-6">
+                                <h6 class="ai-section-title text-info"><i class="bi bi-lightbulb me-2"></i>Recommendations</h6>
+                                <ul class="ai-list">
+                                    {% for rec in ai_summary.recommendations %}
+                                    <li>{{ rec }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            <!-- ── GitHub Intelligence ───────────────────── -->
+            <div class="col-lg-6">
+                <div class="report-card">
+                    <div class="report-card-header">
+                        <i class="bi bi-github me-2"></i>GitHub Intelligence
+                    </div>
+                    <div class="report-card-body">
+                        {% if github.found %}
+                        <div class="github-profile-header">
+                            {% if github.avatar_url %}
+                            <img src="{{ github.avatar_url }}" alt="GitHub Avatar" class="github-avatar">
+                            {% endif %}
+                            <div>
+                                <h6 class="mb-0">{{ github.name or 'N/A' }}</h6>
+                                <small class="text-muted">{{ github.bio or '' }}</small>
+                            </div>
+                        </div>
+
+                        <div class="github-stats">
+                            <div class="stat-item">
+                                <span class="stat-number">{{ github.repos }}</span>
+                                <span class="stat-label">Repos</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">{{ github.followers }}</span>
+                                <span class="stat-label">Followers</span>
+                            </div>
+                            <div class="stat-item">
+                                <span class="stat-number">{{ github.following }}</span>
+                                <span class="stat-label">Following</span>
+                            </div>
+                        </div>
+
+                        <table class="table report-table mt-3">
+                            <tbody>
+                                <tr><td class="label-cell">Account Created</td><td>{{ github.created_at }}</td></tr>
+                                <tr><td class="label-cell">Location</td><td>{{ github.location or 'N/A' }}</td></tr>
+                                <tr><td class="label-cell">Company</td><td>{{ github.company or 'N/A' }}</td></tr>
+                                <tr>
+                                    <td class="label-cell">Profile</td>
+                                    <td><a href="{{ github.profile_url }}" target="_blank" class="profile-link">{{ github.profile_url }} <i class="bi bi-box-arrow-up-right"></i></a></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        {% else %}
+                        <div class="no-data-message">
+                            <i class="bi bi-exclamation-circle me-2"></i>
+                            {{ github.error or 'No GitHub profile data available.' }}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Generated Aliases ─────────────────────── -->
+            <div class="col-lg-6">
+                <div class="report-card">
+                    <div class="report-card-header">
+                        <i class="bi bi-person-lines-fill me-2"></i>Generated Aliases
+                    </div>
+                    <div class="report-card-body">
+                        {% if aliases %}
+                        <div class="alias-cloud">
+                            {% for alias in aliases %}
+                            <span class="badge alias-badge">{{ alias }}</span>
+                            {% endfor %}
+                        </div>
+                        <p class="mt-2 text-muted" style="font-size:0.82rem">
+                            <i class="bi bi-info-circle me-1"></i>{{ aliases|length }} potential username permutations generated
+                        </p>
+                        {% else %}
+                        <div class="no-data-message">
+                            <i class="bi bi-exclamation-circle me-2"></i>No aliases generated. Provide a name to enable alias generation.
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Social Discovery ──────────────────────── -->
+            <div class="col-lg-6">
+                <div class="report-card">
+                    <div class="report-card-header">
+                        <i class="bi bi-share me-2"></i>Social Media Discovery
+                    </div>
+                    <div class="report-card-body">
+                        {% if social_profiles %}
+                        <div class="platform-grid">
+                            {% for profile in social_profiles %}
+                            <div class="platform-item {{ 'platform-found' if profile.found else 'platform-not-found' }}">
+                                <span class="platform-icon">
+                                    {% if profile.found %}
+                                    <i class="bi bi-check-circle-fill text-success"></i>
+                                    {% else %}
+                                    <i class="bi bi-x-circle-fill text-danger"></i>
+                                    {% endif %}
+                                </span>
+                                <span class="platform-name">{{ profile.platform }}</span>
+                                {% if profile.found and profile.url %}
+                                <a href="{{ profile.url }}" target="_blank" class="profile-link" style="font-size:0.78rem">
+                                    <i class="bi bi-box-arrow-up-right"></i>
+                                </a>
+                                {% endif %}
+                                {% if profile.followers is not none %}
+                                <span class="badge bg-info ms-auto" style="font-size:0.7rem">{{ profile.followers }}</span>
+                                {% endif %}
+                                <span class="badge {{ 'bg-success' if profile.found else 'bg-secondary' }} platform-badge">
+                                    {{ 'Found' if profile.found else 'Not Found' }}
+                                </span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <div class="no-data-message">
+                            <i class="bi bi-exclamation-circle me-2"></i>No social discovery data.
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Username Enumeration ──────────────────── -->
+            <div class="col-lg-6">
+                <div class="report-card">
+                    <div class="report-card-header">
+                        <i class="bi bi-person-badge-fill me-2"></i>Username Enumeration
+                    </div>
+                    <div class="report-card-body">
+                        {% if usernames %}
+                        <div class="platform-grid">
+                            {% for platform, found in usernames.items() %}
+                            <div class="platform-item {{ 'platform-found' if found else 'platform-not-found' }}">
+                                <span class="platform-icon">
+                                    {% if found %}
+                                    <i class="bi bi-check-circle-fill text-success"></i>
+                                    {% else %}
+                                    <i class="bi bi-x-circle-fill text-danger"></i>
+                                    {% endif %}
+                                </span>
+                                <span class="platform-name">{{ platform }}</span>
+                                <span class="badge {{ 'bg-success' if found else 'bg-secondary' }} platform-badge">
+                                    {{ 'Found' if found else 'Not Found' }}
+                                </span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <div class="no-data-message">
+                            <i class="bi bi-exclamation-circle me-2"></i>No username enumeration data.
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Adverse Media Screening ────────────────── -->
+            <div class="col-lg-6">
+                <div class="report-card">
+                    <div class="report-card-header">
+                        <i class="bi bi-newspaper me-2"></i>Adverse Media Screening
+                        {% if news_data and news_data.negative_count > 0 %}
+                        <span class="badge bg-danger ms-2">{{ news_data.negative_count }} hits</span>
+                        {% endif %}
+                    </div>
+                    <div class="report-card-body">
+                        {% if news_data and news_data.articles %}
+                        {% if news_data.keywords_matched %}
+                        <div class="mb-2">
+                            <small class="text-muted">Keywords matched:</small>
+                            {% for kw in news_data.keywords_matched %}
+                            <span class="badge bg-warning text-dark me-1" style="font-size:0.7rem">{{ kw }}</span>
+                            {% endfor %}
+                        </div>
+                        {% endif %}
+                        <div class="media-articles">
+                            {% for article in news_data.articles[:8] %}
+                            <div class="media-article-item">
+                                <div class="media-article-header">
+                                    <a href="{{ article.link }}" target="_blank" class="profile-link media-headline">
+                                        {{ article.headline }}
+                                    </a>
+                                </div>
+                                <div class="media-article-meta">
+                                    <span><i class="bi bi-building me-1"></i>{{ article.source }}</span>
+                                    <span><i class="bi bi-calendar me-1"></i>{{ article.date }}</span>
+                                    <span class="badge bg-danger" style="font-size:0.65rem">{{ article.keyword }}</span>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <div class="no-data-message" style="background: rgba(34,197,94,0.08); border-color: rgba(34,197,94,0.15);">
+                            <i class="bi bi-check-circle me-2 text-success"></i>No adverse media articles found.
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Company Intelligence ──────────────────── -->
+            <div class="col-lg-6">
+                <div class="report-card">
+                    <div class="report-card-header">
+                        <i class="bi bi-building me-2"></i>Company Intelligence
+                    </div>
+                    <div class="report-card-body">
+                        {% if company_data and company_data.found %}
+                        <table class="table report-table">
+                            <tbody>
+                                <tr><td class="label-cell">Company</td><td>{{ company_data.name }}</td></tr>
+                                <tr>
+                                    <td class="label-cell">Website</td>
+                                    <td>
+                                        {% if company_data.website %}
+                                        <a href="{{ company_data.website }}" target="_blank" class="profile-link">{{ company_data.website }} <i class="bi bi-box-arrow-up-right"></i></a>
+                                        {% else %}N/A{% endif %}
+                                    </td>
+                                </tr>
+                                <tr><td class="label-cell">Country</td><td>{{ company_data.country }}</td></tr>
+                                <tr>
+                                    <td class="label-cell">Domain Age</td>
+                                    <td>
+                                        {{ company_data.domain_age or 'N/A' }} years
+                                        {% if company_data.domain_age and company_data.domain_age < 2 %}
+                                        <span class="badge bg-warning text-dark ms-2">Young Domain</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                <tr><td class="label-cell">Industry</td><td>{{ company_data.industry }}</td></tr>
+                                <tr><td class="label-cell">Description</td><td>{{ company_data.description }}</td></tr>
+                            </tbody>
+                        </table>
+                        {% else %}
+                        <div class="no-data-message">
+                            <i class="bi bi-exclamation-circle me-2"></i>
+                            {{ company_data.error if company_data else 'No company data available. Provide a company name.' }}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Domain Intelligence ───────────────────── -->
+            <div class="col-lg-6">
+                <div class="report-card">
+                    <div class="report-card-header">
+                        <i class="bi bi-globe me-2"></i>Domain Intelligence
+                    </div>
+                    <div class="report-card-body">
+                        {% if whois.found %}
+                        <table class="table report-table">
+                            <tbody>
+                                <tr><td class="label-cell">Domain</td><td>{{ whois.domain }}</td></tr>
+                                <tr><td class="label-cell">Registrar</td><td>{{ whois.registrar }}</td></tr>
+                                <tr><td class="label-cell">Creation Date</td><td>{{ whois.creation_date }}</td></tr>
+                                <tr><td class="label-cell">Expiration Date</td><td>{{ whois.expiration_date }}</td></tr>
+                                <tr><td class="label-cell">Country</td><td>{{ whois.country }}</td></tr>
+                                <tr>
+                                    <td class="label-cell">Domain Age</td>
+                                    <td>
+                                        {{ whois.domain_age }} years
+                                        {% if whois.domain_age and whois.domain_age < 2 %}
+                                        <span class="badge bg-warning text-dark ms-2">Young Domain</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        {% else %}
+                        <div class="no-data-message">
+                            <i class="bi bi-exclamation-circle me-2"></i>
+                            {{ whois.error or 'No domain intelligence data available.' }}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Investigator Summary ──────────────────── -->
+            <div class="col-lg-6">
+                <div class="report-card summary-card">
+                    <div class="report-card-header">
+                        <i class="bi bi-journal-text me-2"></i>Investigation Notes
+                    </div>
+                    <div class="report-card-body">
+                        <p class="summary-text">
+                            An open-source intelligence investigation was conducted on
+                            <strong>{{ subject.name or subject.username or 'the subject' }}</strong>.
+                            The overall risk classification is
+                            <span class="badge risk-badge {{ risk_class }}">{{ risk.classification }}</span>
+                            with a composite score of <strong>{{ risk.score }}/100</strong>.
+                        </p>
+
+                        {% if github.found %}
+                        <p class="summary-text">
+                            A GitHub profile was identified with {{ github.repos }} public repositories
+                            and {{ github.followers }} followers.
+                        </p>
+                        {% else %}
+                        <p class="summary-text">No GitHub profile was found for the provided username.</p>
+                        {% endif %}
+
+                        {% if usernames %}
+                        {% set found_platforms = [] %}
+                        {% for p, v in usernames.items() if v %}
+                            {% if found_platforms.append(p) %}{% endif %}
+                        {% endfor %}
+                        {% if found_platforms %}
+                        <p class="summary-text">The username was found on: <strong>{{ found_platforms | join(', ') }}</strong>.</p>
+                        {% else %}
+                        <p class="summary-text">The username was not found on any of the checked platforms.</p>
+                        {% endif %}
+                        {% endif %}
+
+                        {% if whois.found %}
+                        <p class="summary-text">
+                            The domain is registered with <strong>{{ whois.registrar }}</strong> and has been
+                            active for approximately <strong>{{ whois.domain_age }}</strong> years.
+                        </p>
+                        {% endif %}
+
+                        <p class="summary-disclaimer">
+                            <i class="bi bi-info-circle me-1"></i>
+                            This report is based solely on publicly available information and should be used
+                            as a preliminary assessment.
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+        </div><!-- /row -->
+    </div><!-- /container -->
+</section>
+{% endblock %}

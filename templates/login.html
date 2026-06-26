@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}OSINT-Pro — Login{% endblock %}
+
+{% block content %}
+<section class="login-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-5 col-lg-4">
+                <div class="login-card">
+                    <div class="login-header text-center">
+                        <div class="login-icon-wrapper">
+                            <i class="bi bi-shield-lock-fill login-icon"></i>
+                        </div>
+                        <h2 class="login-title">OSINT-Pro</h2>
+                        <p class="login-subtitle">Analyst Authentication</p>
+                    </div>
+                    <div class="login-body">
+                        <form method="POST" action="{{ url_for('login') }}" id="login-form">
+                            <div class="form-floating-group">
+                                <div class="input-icon-wrapper">
+                                    <i class="bi bi-person-fill input-icon"></i>
+                                    <input type="text" class="form-control custom-input" id="input-login-user"
+                                           name="username" placeholder="Username" autocomplete="username" required>
+                                    <label for="input-login-user" class="custom-label">Username</label>
+                                </div>
+                            </div>
+                            <div class="form-floating-group">
+                                <div class="input-icon-wrapper">
+                                    <i class="bi bi-lock-fill input-icon"></i>
+                                    <input type="password" class="form-control custom-input" id="input-login-pass"
+                                           name="password" placeholder="Password" autocomplete="current-password" required>
+                                    <label for="input-login-pass" class="custom-label">Password</label>
+                                </div>
+                            </div>
+                            <button type="submit" class="btn btn-investigate" id="btn-login">
+                                <i class="bi bi-box-arrow-in-right me-2"></i>Sign In
+                            </button>
+                        </form>
+                        <p class="login-hint mt-3 text-center">
+                            <i class="bi bi-info-circle me-1"></i>
+                            Default credentials: <code>analyst</code> / <code>osint2026</code>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

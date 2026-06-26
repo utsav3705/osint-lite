@@ -1,0 +1,107 @@
+{% extends "base.html" %}
+{% block title %}OSINT-Pro — Case History{% endblock %}
+
+{% block content %}
+<section class="cases-section">
+    <div class="container">
+
+        <!-- ── Header ────────────────────────────────────── -->
+        <div class="dashboard-header">
+            <h1 class="dashboard-title">
+                <i class="bi bi-folder2-open me-2"></i>Investigation History
+            </h1>
+            <p class="dashboard-subtitle">All completed due diligence investigations</p>
+            <div class="hero-divider"></div>
+        </div>
+
+        <!-- ── Search Bar ────────────────────────────────── -->
+        <div class="row mb-4">
+            <div class="col-md-6 col-lg-4">
+                <div class="input-icon-wrapper">
+                    <i class="bi bi-search input-icon"></i>
+                    <input type="text" class="form-control custom-input" id="case-search"
+                           placeholder="Search by name or company..." autocomplete="off">
+                    <label for="case-search" class="custom-label">Search cases…</label>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-4 mt-3 mt-md-0">
+                <select class="form-select custom-input" id="risk-filter" style="padding-left:1rem">
+                    <option value="">All Risk Levels</option>
+                    <option value="High">High Risk</option>
+                    <option value="Medium">Medium Risk</option>
+                    <option value="Low">Low Risk</option>
+                </select>
+            </div>
+        </div>
+
+        <!-- ── Cases Table ───────────────────────────────── -->
+        <div class="report-card">
+            <div class="report-card-header">
+                <i class="bi bi-table me-2"></i>All Cases
+                <span class="badge bg-primary ms-2" id="case-count">{{ investigations|length }}</span>
+            </div>
+            <div class="report-card-body">
+                {% if investigations %}
+                <div class="table-responsive">
+                    <table class="table report-table cases-table" id="cases-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Subject Name</th>
+                                <th>Company</th>
+                                <th>Date</th>
+                                <th>Risk Score</th>
+                                <th>Classification</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for inv in investigations %}
+                            <tr data-name="{{ inv.subject_name|lower }}" data-company="{{ (inv.company or '')|lower }}" data-risk="{{ inv.risk_classification }}">
+                                <td><span class="case-id">#{{ inv.id }}</span></td>
+                                <td><strong>{{ inv.subject_name }}</strong></td>
+                                <td>{{ inv.company or 'N/A' }}</td>
+                                <td>{{ inv.date_created.strftime('%Y-%m-%d %H:%M') if inv.date_created else 'N/A' }}</td>
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="mini-progress">
+                                            {% set rc = 'risk-low' if inv.risk_classification == 'Low' else ('risk-medium' if inv.risk_classification == 'Medium' else 'risk-high') %}
+                                            <div class="mini-progress-bar {{ rc }}" style="width: {{ inv.risk_score }}%"></div>
+                                        </div>
+                                        <span>{{ inv.risk_score|int }}/100</span>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="badge risk-badge {{ rc }}">{{ inv.risk_classification }}</span>
+                                </td>
+                                <td><span class="badge bg-success">{{ inv.status }}</span></td>
+                                <td>
+                                    {% if inv.report_path %}
+                                    <a href="{{ url_for('download_report', filename=inv.report_path) }}"
+                                       class="btn btn-sm btn-outline-info me-1" title="Download PDF">
+                                        <i class="bi bi-file-earmark-pdf"></i>
+                                    </a>
+                                    {% endif %}
+                                    <button class="btn btn-sm btn-outline-danger btn-delete-case"
+                                            data-case-id="{{ inv.id }}" title="Delete">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% else %}
+                <div class="no-data-message">
+                    <i class="bi bi-inbox me-2"></i>
+                    No investigations found. <a href="{{ url_for('index') }}" class="profile-link">Start a new investigation</a>.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+    </div>
+</section>
+{% endblock %}
