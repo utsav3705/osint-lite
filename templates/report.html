@@ -20,6 +20,11 @@
                     <i class="bi bi-file-earmark-pdf-fill me-2"></i>Download PDF
                 </a>
                 {% endif %}
+                {% if docx_filename %}
+                <a href="{{ url_for('download_report', filename=docx_filename) }}" class="btn btn-primary" id="btn-download-docx">
+                    <i class="bi bi-file-earmark-word-fill me-2"></i>Download DOCX
+                </a>
+                {% endif %}
                 <a href="{{ url_for('index') }}" class="btn btn-new-investigation" id="btn-new-investigation">
                     <i class="bi bi-plus-circle me-2"></i>New Investigation
                 </a>
@@ -83,6 +88,124 @@
                                 <li>{{ factor }}</li>
                                 {% endfor %}
                             </ul>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Email Breach Intelligence ──────────────── -->
+            <div class="col-lg-6">
+                <div class="report-card">
+                    <div class="report-card-header">
+                        <i class="bi bi-envelope-exclamation-fill me-2"></i>Email Breach Intelligence
+                    </div>
+                    <div class="report-card-body">
+                        {% if email_breaches and email_breaches.breached %}
+                        <div class="alert alert-danger mb-3 py-2">
+                            <i class="bi bi-exclamation-triangle-fill me-2"></i><strong>Breached:</strong> {{ email_breaches.count }} occurrences
+                        </div>
+                        <p class="mb-2 fw-medium">Breach Names:</p>
+                        <div class="alias-cloud">
+                            {% for b in email_breaches.breaches %}
+                            <span class="badge bg-danger">{{ b }}</span>
+                            {% endfor %}
+                        </div>
+                        <div class="mt-3">
+                            <span class="badge bg-danger text-white">Risk Indicator: High</span>
+                        </div>
+                        {% else %}
+                        <div class="alert alert-success mb-0 py-2">
+                            <i class="bi bi-shield-check-fill me-2"></i>No breaches found for this email.
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── LinkedIn Intelligence ──────────────────── -->
+            <div class="col-lg-6">
+                <div class="report-card">
+                    <div class="report-card-header">
+                        <i class="bi bi-linkedin me-2"></i>LinkedIn Intelligence
+                    </div>
+                    <div class="report-card-body">
+                        {% if linkedin_data and linkedin_data.found %}
+                        <div class="mb-2">
+                            <h6 class="fw-bold text-success mb-2">Estimated Match</h6>
+                            <p class="mb-0 text-muted">Confidence:<br><span class="badge bg-success mt-1" style="font-size: 1rem;">{{ linkedin_data.confidence }}%</span></p>
+                        </div>
+                        {% else %}
+                        <div class="no-data-message" style="flex-direction: column; text-align: center;">
+                            <div><i class="bi bi-info-circle mb-2" style="font-size: 1.5rem;"></i></div>
+                            <div>Status:<br><strong>No verified profile found</strong></div>
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <!-- ── Social Media Content Analysis ──────────── -->
+            <div class="col-lg-6">
+                <div class="report-card">
+                    <div class="report-card-header">
+                        <i class="bi bi-chat-square-quote me-2"></i>Social Media Content Analysis
+                    </div>
+                    <div class="report-card-body">
+                        {% if social_analysis %}
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <span>Sentiment: 
+                                <span class="badge {% if social_analysis.sentiment == 'Positive' %}bg-success{% elif social_analysis.sentiment == 'Negative' %}bg-danger{% else %}bg-secondary{% endif %}">
+                                    {{ social_analysis.sentiment }} ({{ social_analysis.score }})
+                                </span>
+                            </span>
+                            <span>Risk:
+                                <span class="badge {% if social_analysis.risk == 'High' %}bg-danger{% elif social_analysis.risk == 'Medium' %}bg-warning text-dark{% else %}bg-success{% endif %}">
+                                    {{ social_analysis.risk }}
+                                </span>
+                            </span>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <label class="form-label mb-1 text-muted small">Toxicity Score ({{ (social_analysis.toxicity * 10)|round(1) }}/10)</label>
+                            <div class="progress" style="height: 10px;">
+                                <div class="progress-bar {% if social_analysis.toxicity >= 0.7 %}bg-danger{% elif social_analysis.toxicity >= 0.4 %}bg-warning{% else %}bg-success{% endif %}" role="progressbar" style="width: {{ social_analysis.toxicity * 100 }}%"></div>
+                            </div>
+                        </div>
+
+                        {% if social_analysis.keywords %}
+                        <div>
+                            <small class="text-muted d-block mb-1">Risk Keywords Detected:</small>
+                            {% for kw in social_analysis.keywords %}
+                            <span class="badge bg-danger">{{ kw }}</span>
+                            {% endfor %}
+                        </div>
+                        {% else %}
+                        <small class="text-success"><i class="bi bi-check-circle me-1"></i>No risk keywords detected in recent content.</small>
+                        {% endif %}
+                        {% else %}
+                        <div class="no-data-message">
+                            <i class="bi bi-info-circle me-2"></i>No social content to analyze.
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            
+            <!-- ── Relationship Graph ─────────────────────── -->
+            <div class="col-lg-6">
+                <div class="report-card">
+                    <div class="report-card-header">
+                        <i class="bi bi-diagram-3 me-2"></i>Relationship Graph
+                    </div>
+                    <div class="report-card-body p-0" style="min-height: 300px; display: flex; align-items: center; justify-content: center; position: relative;">
+                        {% if graph_html %}
+                            <div style="width:100%; height:300px;">
+                                {{ graph_html|safe }}
+                            </div>
+                        {% else %}
+                        <div class="no-data-message p-3">
+                            <i class="bi bi-diagram-2 me-2"></i>Graph could not be generated.
                         </div>
                         {% endif %}
                     </div>

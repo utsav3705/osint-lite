@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}OSINT-Pro — Register Analyst{% endblock %}
+
+{% block content %}
+<section class="login-section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-5 col-lg-4">
+                <div class="login-card">
+                    <div class="login-header text-center">
+                        <div class="login-icon-wrapper">
+                            <i class="bi bi-shield-lock-fill login-icon"></i>
+                        </div>
+                        <h2 class="login-title">Register</h2>
+                        <p class="login-subtitle">Create a new Analyst account</p>
+                    </div>
+                    <div class="login-body">
+                        <form method="POST" action="{{ url_for('register') }}">
+                            <div class="form-floating-group">
+                                <div class="input-icon-wrapper">
+                                    <i class="bi bi-person-fill input-icon"></i>
+                                    <input type="text" class="form-control custom-input" id="username"
+                                           name="username" placeholder="Username" required autofocus>
+                                    <label for="username" class="custom-label">Username</label>
+                                </div>
+                            </div>
+                            
+                            <div class="form-floating-group">
+                                <div class="input-icon-wrapper">
+                                    <i class="bi bi-lock-fill input-icon"></i>
+                                    <input type="password" class="form-control custom-input" id="password"
+                                           name="password" placeholder="Password" required>
+                                    <label for="password" class="custom-label">Password</label>
+                                </div>
+                            </div>
+
+                            <button type="submit" class="btn btn-investigate">
+                                <i class="bi bi-person-plus me-2"></i>Register
+                            </button>
+                        </form>
+                        
+                        <div class="text-center mt-4">
+                            <a href="{{ url_for('login') }}" class="text-decoration-none small text-muted">Already have an account? Login here</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

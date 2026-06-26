@@ -5,7 +5,21 @@ SQLAlchemy models for the investigations database.
 
 from datetime import datetime, timezone
 from sqlalchemy import Column, Integer, String, Float, DateTime, Text
+from flask_login import UserMixin
 from database import Base
+
+
+class User(Base, UserMixin):
+    """Represents a system user (Analyst or Admin)."""
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    username = Column(String(100), unique=True, nullable=False)
+    password_hash = Column(String(255), nullable=False)
+    role = Column(String(50), default="Analyst")
+
+    def __repr__(self):
+        return f"<User '{self.username}'>"
 
 
 class Investigation(Base):
@@ -26,6 +40,7 @@ class Investigation(Base):
     analyst = Column(String(100), default="analyst")
     status = Column(String(50), default="Completed")
     notes = Column(Text, default="")
+    json_blob = Column(Text, default="{}")
 
     def __repr__(self):
         return (
@@ -49,4 +64,5 @@ class Investigation(Base):
             "analyst": self.analyst,
             "status": self.status,
             "notes": self.notes,
+            "json_blob": self.json_blob,
         }

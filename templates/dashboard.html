@@ -88,7 +88,10 @@
         <div class="report-card">
             <div class="report-card-header d-flex justify-content-between align-items-center">
                 <span><i class="bi bi-clock-history me-2"></i>Recent Investigations</span>
-                <a href="{{ url_for('cases') }}" class="btn btn-sm btn-outline-light">View All</a>
+                <div>
+                    <a href="{{ url_for('api.get_cases') }}" target="_blank" class="btn btn-sm btn-outline-info me-2"><i class="bi bi-download me-1"></i>Export JSON</a>
+                    <a href="{{ url_for('cases') }}" class="btn btn-sm btn-outline-light">View All</a>
+                </div>
             </div>
             <div class="report-card-body">
                 {% if recent_cases %}
