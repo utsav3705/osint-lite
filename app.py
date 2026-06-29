@@ -60,6 +60,8 @@ login_manager.login_view = "login"
 def load_user(user_id):
     db = get_session()
     user = db.query(User).get(int(user_id))
+    if user:
+        db.expunge(user)
     db.close()
     return user
 
@@ -364,16 +366,15 @@ def login():
 
         db = get_session()
         user = db.query(User).filter_by(username=username).first()
-        db.close()
         
         # Fallback to hardcoded admin if DB has no users
         if user and check_password_hash(user.password_hash, password):
             login_user(user)
+            db.close()
             flash(f"Welcome back, {username}.", "success")
             return redirect(url_for("dashboard"))
         elif username == "admin" and password == "admin":
             # Auto-create admin
-            db = get_session()
             new_user = User(username="admin", password_hash=generate_password_hash("admin"), role="Admin")
             db.add(new_user)
             db.commit()
@@ -381,6 +382,7 @@ def login():
             db.close()
             return redirect(url_for("dashboard"))
         else:
+            db.close()
             flash("Invalid credentials. Please try again.", "danger")
             return redirect(url_for("login"))
 
@@ -428,8 +430,12 @@ def not_found(e):
     return redirect(url_for("index"))
 
 @app.errorhandler(500)
+@app.errorhandler(Exception)
 def server_error(e):
-    flash("An internal error occurred. Please try again.", "danger")
+    import traceback
+    traceback.print_exc()
+    app.logger.exception(e)
+    flash(str(e), "danger")
     return redirect(url_for("index"))
 
 
