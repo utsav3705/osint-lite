@@ -5,7 +5,7 @@
 
 /* ── Design Tokens ─────────────────────────────────────────── */
 :root {
-    /* Base Colors */
+    /* Base Colors (Shared) */
     --blue-500: #0070F3;
     --blue-400: #3291FF;
     --blue-300: #79B8FF;
@@ -15,19 +15,34 @@
     --green-500: #00C853;
     --orange-500: #F5A623;
     --red-500: #FF0000;
+    
+    /* Radii & Shadows */
+    --radius-sm: 4px;
+    --radius-md: 6px;
+    --radius-lg: 8px;
+    --radius-xl: 12px;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
+    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.6);
+    --shadow-glow: 0 0 15px rgba(0, 112, 243, 0.2);
+    --transition-fast: 0.15s ease;
+    --transition-normal: 0.25s ease;
+    --transition-slow: 0.4s ease;
+}
 
-    /* Theme Variables (Dark Mode Default) */
+/* Theme Variables (Unified Architecture) */
+[data-bs-theme="dark"] {
     --bg-primary: #0A0A0A;
     --bg-secondary: #111111;
     --bg-glass: rgba(255, 255, 255, 0.03);
-    --bg-glass-hover: var(--bg-glass-hover);
+    --bg-glass-hover: rgba(255, 255, 255, 0.06);
     
     --card-bg: #111111;
-    --card-bg-hover: var(--card-bg-hover);
+    --card-bg-hover: rgba(255, 255, 255, 0.05);
     --card-header-bg: rgba(255, 255, 255, 0.02);
     
     --input-bg: rgba(255, 255, 255, 0.03);
-    --input-bg-focus: var(--bg-glass-hover);
+    --input-bg-focus: rgba(255, 255, 255, 0.06);
     --input-text: #EDEDED;
     --input-label: #666666;
     
@@ -44,29 +59,25 @@
     --footer-bg: rgba(5, 13, 26, 0.95);
     --modal-bg: #0A0A0A;
     --table-header-bg: rgba(255,255,255,0.03);
-
-    /* Radii & Shadows */
-    --radius-sm: 4px;
-    --radius-md: 6px;
-    --radius-lg: 8px;
-    --radius-xl: 12px;
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
-    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.5);
-    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.6);
-    --shadow-glow: 0 0 15px rgba(0, 112, 243, 0.2);
-    --transition-fast: 0.15s ease;
-    --transition-normal: 0.25s ease;
-    --transition-slow: 0.4s ease;
+    
+    /* Map to Bootstrap 5 CSS variables to ensure complete integration */
+    --bs-body-bg: var(--bg-primary);
+    --bs-body-color: var(--text-primary);
+    --bs-secondary-color: var(--text-secondary);
+    --bs-card-bg: var(--card-bg);
+    --bs-card-cap-bg: var(--card-header-bg);
+    --bs-border-color: var(--border-color);
+    --bs-tertiary-bg: var(--bg-secondary);
 }
 
-body.light-mode {
+[data-bs-theme="light"] {
     --bg-primary: #f8fafc;
     --bg-secondary: #f0f4f8;
     --bg-glass: rgba(0, 0, 0, 0.02);
     --bg-glass-hover: rgba(0, 0, 0, 0.06);
     
     --card-bg: rgba(255, 255, 255, 0.85);
-    --card-bg-hover: rgba(255, 255, 255, 1);
+    --card-bg-hover: #ffffff;
     --card-header-bg: linear-gradient(135deg, #e2e8f0, #f1f5f9);
 
     --input-bg: rgba(0, 0, 0, 0.03);
@@ -86,6 +97,15 @@ body.light-mode {
     --footer-bg: rgba(255, 255, 255, 0.95);
     --modal-bg: #f8fafc;
     --table-header-bg: rgba(0, 0, 0, 0.02);
+    
+    /* Map to Bootstrap 5 CSS variables */
+    --bs-body-bg: var(--bg-primary);
+    --bs-body-color: var(--text-primary);
+    --bs-secondary-color: var(--text-secondary);
+    --bs-card-bg: var(--card-bg);
+    --bs-card-cap-bg: var(--card-header-bg);
+    --bs-border-color: var(--border-color);
+    --bs-tertiary-bg: var(--bg-secondary);
 }
 
 
@@ -1353,13 +1373,6 @@ body::before {
     transform: scale(1.15);
 }
 
-
-/* Theme-aware Utility Classes */
-.text-white { color: var(--text-primary) !important; }
-.bg-dark { background-color: var(--card-bg) !important; }
-.bg-light { background-color: var(--bg-primary) !important; }
-.border-secondary { border-color: var(--border-color) !important; }
-.text-muted { color: var(--text-muted) !important; }
 
 /* ── Responsive ────────────────────────────────────────────── */
 @media (max-width: 768px) {

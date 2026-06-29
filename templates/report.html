@@ -5,9 +5,9 @@
 <section class="workspace-section">
     <div class="container-fluid workspace-container">
         <!-- ── Workspace Header ─────────────────────────────── -->
-        <div class="workspace-header d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom border-secondary">
+        <div class="workspace-header d-flex justify-content-between align-items-center mb-4 pb-3 border-bottom">
             <div>
-                <h2 class="mb-1 text-white"><i class="bi bi-briefcase-fill me-2 text-primary"></i>Investigation Workspace</h2>
+                <h2 class="mb-1"><i class="bi bi-briefcase-fill me-2 text-primary"></i>Investigation Workspace</h2>
                 <div class="text-muted small">
                     Subject: <strong>{{ subject.name or subject.username or 'N/A' }}</strong> | Date: {{ "now" | default("today") }}
                 </div>
@@ -124,7 +124,7 @@
                             <div class="report-card-header"><i class="bi bi-briefcase-fill me-2"></i>Professional Profile Intelligence</div>
                             <div class="report-card-body">
                                 {% if linkedin_data and linkedin_data.found %}
-                                    <div class="d-flex justify-content-between align-items-start mb-4 border-bottom border-secondary pb-3">
+                                    <div class="d-flex justify-content-between align-items-start mb-4 border-bottom pb-3">
                                         <div>
                                             <h5 class="text-success mb-1"><i class="bi bi-check-circle-fill me-2"></i>High-Confidence Profile Identified</h5>
                                             <p class="text-muted small mb-0">Based on cross-referenced company and name records.</p>
@@ -180,7 +180,7 @@
                                                 </div>
                                             </div>
                                             <div class="col-md-4">
-                                                <div class="github-stats bg-dark p-2 rounded d-flex justify-content-between text-center">
+                                                <div class="github-stats p-2 rounded d-flex justify-content-between text-center">
                                                     <div><strong class="d-block text-primary fs-5">{{ github.repos }}</strong><small class="text-muted">Repos</small></div>
                                                     <div><strong class="d-block text-primary fs-5">{{ github.followers }}</strong><small class="text-muted">Followers</small></div>
                                                     <div><strong class="d-block text-primary fs-5">{{ github.following }}</strong><small class="text-muted">Following</small></div>
@@ -199,9 +199,9 @@
                                     <div class="report-card-header"><i class="bi bi-globe2 me-2"></i>Platform Discovery</div>
                                     <div class="report-card-body">
                                         {% if social_profiles or usernames %}
-                                            <ul class="list-group list-group-flush bg-transparent">
+                                            <ul class="list-group list-group-flush">
                                                 <!-- Mock Instagram specific check as requested -->
-                                                <li class="list-group-item bg-transparent text-white border-secondary d-flex justify-content-between align-items-center px-0">
+                                                <li class="list-group-item d-flex justify-content-between align-items-center px-0">
                                                     <span><i class="bi bi-instagram me-2 text-danger"></i>Instagram</span>
                                                     {% set ig_found = false %}
                                                     {% for p in social_profiles if p.platform|lower == 'instagram' and p.found %} {% set ig_found = true %} {% endfor %}
@@ -212,7 +212,7 @@
                                                     {% endif %}
                                                 </li>
                                                 {% for profile in social_profiles if profile.platform|lower != 'instagram' %}
-                                                    <li class="list-group-item bg-transparent text-white border-secondary d-flex justify-content-between align-items-center px-0">
+                                                    <li class="list-group-item d-flex justify-content-between align-items-center px-0">
                                                         <span><i class="bi bi-record-circle text-primary me-2"></i>{{ profile.platform }}</span>
                                                         {% if profile.found %}
                                                             <a href="{{ profile.url }}" target="_blank" class="badge bg-success text-decoration-none">Verified <i class="bi bi-link-45deg ms-1"></i></a>
@@ -352,7 +352,7 @@
                                             <div class="alert alert-danger py-2 mb-3"><i class="bi bi-flag-fill me-2"></i>{{ news_data.negative_count }} adverse articles flagged.</div>
                                             <div class="media-articles" style="max-height: 250px; overflow-y: auto;">
                                                 {% for article in news_data.articles[:5] %}
-                                                    <div class="border-bottom border-secondary pb-2 mb-2">
+                                                    <div class="border-bottom pb-2 mb-2">
                                                         <a href="{{ article.link }}" target="_blank" class="fw-bold text-info text-decoration-none d-block mb-1">{{ article.headline }}</a>
                                                         <small class="text-muted"><i class="bi bi-building me-1"></i>{{ article.source }} | {{ article.date }}</small>
                                                         <span class="badge bg-danger ms-2">{{ article.keyword }}</span>
@@ -409,10 +409,10 @@
                                     {% set found_count = 0 %}
                                     {% for name, found, icon, color in presence_map %}
                                         <div class="col-md-4 col-sm-6">
-                                            <div class="p-3 border border-secondary rounded d-flex align-items-center justify-content-between h-100 footprint-card {% if found %}footprint-active{% endif %}">
+                                            <div class="p-3 border rounded d-flex align-items-center justify-content-between h-100 footprint-card {% if found %}footprint-active{% endif %}">
                                                 <div class="d-flex align-items-center">
                                                     <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width:40px; height:40px; background:var(--bg-glass-hover);">
-                                                        <i class="bi {{ icon }} fs-4 {% if found %}text-white{% else %}text-muted{% endif %}"></i>
+                                                        <i class="bi {{ icon }} fs-4 {% if found %}{% else %}text-muted{% endif %}"></i>
                                                     </div>
                                                     <span class="fw-bold {% if not found %}text-muted{% endif %}">{{ name }}</span>
                                                 </div>
@@ -429,7 +429,7 @@
                                     {% endfor %}
                                 </div>
 
-                                <div class="mt-5 p-4 border border-secondary rounded bg-dark text-center">
+                                <div class="mt-5 p-4 border rounded text-center">
                                     <h5 class="text-uppercase text-muted tracking-wide mb-3">Overall Digital Visibility</h5>
                                     {% if found_count >= 5 %}
                                         <h2 class="text-danger mb-0">High Exposure</h2>
@@ -477,11 +477,11 @@
                                             <span class="badge risk-badge {{ risk_class }} fs-5 px-4 py-2">{{ risk.classification }} Risk</span>
                                         </div>
                                         {% if risk.factors %}
-                                        <div class="text-start bg-dark p-3 rounded">
+                                        <div class="text-start p-3 rounded">
                                             <h6 class="text-muted text-uppercase small fw-bold mb-3">Triggered Factors</h6>
                                             <ul class="list-unstyled mb-0">
                                                 {% for factor in risk.factors %}
-                                                <li class="mb-2 pb-2 border-bottom border-secondary last-no-border"><i class="bi bi-exclamation-circle text-warning me-2"></i>{{ factor }}</li>
+                                                <li class="mb-2 pb-2 border-bottom last-no-border"><i class="bi bi-exclamation-circle text-warning me-2"></i>{{ factor }}</li>
                                                 {% endfor %}
                                             </ul>
                                         </div>
@@ -537,14 +537,14 @@
                                     {% set ev_count = 1 %}
                                     
                                     {% if github.found %}
-                                        <div class="accordion-item bg-dark border-secondary mb-2 rounded">
+                                        <div class="accordion-item mb-2 rounded">
                                             <h2 class="accordion-header">
-                                                <button class="accordion-button collapsed bg-transparent text-white fw-bold shadow-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#ev-github">
+                                                <button class="accordion-button collapsed fw-bold shadow-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#ev-github">
                                                     <span class="badge bg-secondary me-3">EV-{{ "%03d"|format(ev_count) }}</span> GitHub Repository Data
                                                 </button>
                                             </h2>
                                             <div id="ev-github" class="accordion-collapse collapse" data-bs-parent="#evidenceAccordion">
-                                                <div class="accordion-body border-top border-secondary text-muted small">
+                                                <div class="accordion-body border-top text-muted small">
                                                     URL: {{ github.profile_url }}<br>
                                                     ID: {{ github.name or github.username }}<br>
                                                     Timestamp: {{ github.created_at }}
@@ -555,14 +555,14 @@
                                     {% endif %}
 
                                     {% if linkedin_data and linkedin_data.found %}
-                                        <div class="accordion-item bg-dark border-secondary mb-2 rounded">
+                                        <div class="accordion-item mb-2 rounded">
                                             <h2 class="accordion-header">
-                                                <button class="accordion-button collapsed bg-transparent text-white fw-bold shadow-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#ev-prof">
+                                                <button class="accordion-button collapsed fw-bold shadow-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#ev-prof">
                                                     <span class="badge bg-secondary me-3">EV-{{ "%03d"|format(ev_count) }}</span> Professional Profile Data
                                                 </button>
                                             </h2>
                                             <div id="ev-prof" class="accordion-collapse collapse" data-bs-parent="#evidenceAccordion">
-                                                <div class="accordion-body border-top border-secondary text-muted small">
+                                                <div class="accordion-body border-top text-muted small">
                                                     Company: {{ linkedin_data.company }}<br>
                                                     Confidence: {{ linkedin_data.confidence }}%
                                                 </div>
@@ -572,14 +572,14 @@
                                     {% endif %}
 
                                     {% if whois.found %}
-                                        <div class="accordion-item bg-dark border-secondary mb-2 rounded">
+                                        <div class="accordion-item mb-2 rounded">
                                             <h2 class="accordion-header">
-                                                <button class="accordion-button collapsed bg-transparent text-white fw-bold shadow-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#ev-whois">
+                                                <button class="accordion-button collapsed fw-bold shadow-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#ev-whois">
                                                     <span class="badge bg-secondary me-3">EV-{{ "%03d"|format(ev_count) }}</span> Domain Registration Record
                                                 </button>
                                             </h2>
                                             <div id="ev-whois" class="accordion-collapse collapse" data-bs-parent="#evidenceAccordion">
-                                                <div class="accordion-body border-top border-secondary text-muted small">
+                                                <div class="accordion-body border-top text-muted small">
                                                     Domain: {{ whois.domain }}<br>
                                                     Registrar: {{ whois.registrar }}<br>
                                                     Registered: {{ whois.creation_date }}
@@ -590,14 +590,14 @@
                                     {% endif %}
 
                                     {% if company_data and company_data.found %}
-                                        <div class="accordion-item bg-dark border-secondary mb-2 rounded">
+                                        <div class="accordion-item mb-2 rounded">
                                             <h2 class="accordion-header">
-                                                <button class="accordion-button collapsed bg-transparent text-white fw-bold shadow-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#ev-comp">
+                                                <button class="accordion-button collapsed fw-bold shadow-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#ev-comp">
                                                     <span class="badge bg-secondary me-3">EV-{{ "%03d"|format(ev_count) }}</span> Corporate Entity Record
                                                 </button>
                                             </h2>
                                             <div id="ev-comp" class="accordion-collapse collapse" data-bs-parent="#evidenceAccordion">
-                                                <div class="accordion-body border-top border-secondary text-muted small">
+                                                <div class="accordion-body border-top text-muted small">
                                                     Entity: {{ company_data.name }}<br>
                                                     Location: {{ company_data.country }}
                                                 </div>
@@ -607,14 +607,14 @@
                                     {% endif %}
 
                                     {% if news_data and news_data.negative_count > 0 %}
-                                        <div class="accordion-item bg-dark border-secondary mb-2 rounded">
+                                        <div class="accordion-item mb-2 rounded">
                                             <h2 class="accordion-header">
-                                                <button class="accordion-button collapsed bg-transparent text-white fw-bold shadow-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#ev-news">
+                                                <button class="accordion-button collapsed fw-bold shadow-none border-0" type="button" data-bs-toggle="collapse" data-bs-target="#ev-news">
                                                     <span class="badge bg-danger me-3">EV-{{ "%03d"|format(ev_count) }}</span> Adverse Media Findings
                                                 </button>
                                             </h2>
                                             <div id="ev-news" class="accordion-collapse collapse" data-bs-parent="#evidenceAccordion">
-                                                <div class="accordion-body border-top border-secondary text-muted small">
+                                                <div class="accordion-body border-top text-muted small">
                                                     {{ news_data.negative_count }} articles flagged.<br>
                                                     Keywords: {{ news_data.keywords_matched | join(', ') }}
                                                 </div>
@@ -624,7 +624,7 @@
                                     {% endif %}
 
                                     {% if ev_count == 1 %}
-                                        <div class="p-4 border border-secondary border-dashed rounded text-center text-muted">
+                                        <div class="p-4 border border-dashed rounded text-center text-muted">
                                             No verified evidence items collected.
                                         </div>
                                     {% endif %}

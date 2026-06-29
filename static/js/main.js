@@ -147,25 +147,29 @@ function initDarkMode() {
     if (!toggle) return;
 
     const icon = toggle.querySelector('i');
-    const savedMode = localStorage.getItem('osint-pro-mode');
+    const savedMode = localStorage.getItem('osint-pro-mode') || 'dark';
 
     if (savedMode === 'light') {
-        document.body.classList.add('light-mode');
+        document.documentElement.setAttribute('data-bs-theme', 'light');
         if (icon) {
             icon.classList.remove('bi-moon-stars-fill');
             icon.classList.add('bi-sun-fill');
         }
+    } else {
+        document.documentElement.setAttribute('data-bs-theme', 'dark');
     }
 
     toggle.addEventListener('click', (e) => {
         e.preventDefault();
-        document.body.classList.toggle('light-mode');
-
-        const isLight = document.body.classList.contains('light-mode');
-        localStorage.setItem('osint-pro-mode', isLight ? 'light' : 'dark');
+        
+        const currentTheme = document.documentElement.getAttribute('data-bs-theme');
+        const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+        
+        document.documentElement.setAttribute('data-bs-theme', newTheme);
+        localStorage.setItem('osint-pro-mode', newTheme);
 
         if (icon) {
-            if (isLight) {
+            if (newTheme === 'light') {
                 icon.classList.remove('bi-moon-stars-fill');
                 icon.classList.add('bi-sun-fill');
             } else {
