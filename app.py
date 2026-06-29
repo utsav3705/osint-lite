@@ -438,9 +438,10 @@ def server_error(e):
     flash(str(e), "danger")
     return redirect(url_for("index"))
 
+with app.app_context():
+    init_db()
 
 if __name__ == "__main__":
     os.makedirs(REPORTS_DIR, exist_ok=True)
     os.makedirs(UPLOAD_DIR, exist_ok=True)
-    init_db()
     app.run(debug=True, port=5000)
