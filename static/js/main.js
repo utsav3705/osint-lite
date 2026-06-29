@@ -12,6 +12,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initCaseSearch();
     initCourtUpload();
     initDeleteHandlers();
+    initWorkspaceTabs();
 });
 
 
@@ -317,4 +318,23 @@ function showToast(message, type) {
             setTimeout(() => alert.remove(), 300);
         }
     }, 5000);
+}
+
+// ── Workspace Tab Events ─────────────────────────────────────
+function initWorkspaceTabs() {
+    const tabEls = document.querySelectorAll('button[data-bs-toggle="pill"]');
+    tabEls.forEach(tabEl => {
+        tabEl.addEventListener('shown.bs.tab', function (event) {
+            if (event.target.id === 'tab-network-tab') {
+                if (typeof Plotly !== 'undefined') {
+                    const plotEl = document.querySelector('.js-plotly-plot');
+                    if (plotEl) {
+                        Plotly.Plots.resize(plotEl);
+                    }
+                } else {
+                    window.dispatchEvent(new Event('resize'));
+                }
+            }
+        });
+    });
 }

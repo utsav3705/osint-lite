@@ -1581,6 +1581,65 @@ body.light-mode .mini-progress {
     }
 }
 
+/* ── Workspace / Investigation Dashboard ────────────────────── */
+.workspace-section {
+    padding: 2rem 0;
+    min-height: calc(100vh - 140px);
+}
+.workspace-container {
+    max-width: 1600px;
+    padding: 0 2rem;
+}
+.sidebar-border-right {
+    border-right: 1px solid var(--border-subtle);
+}
+.workspace-nav .nav-link {
+    color: var(--text-secondary);
+    text-align: left;
+    padding: 0.85rem 1rem;
+    margin-bottom: 0.5rem;
+    border-radius: var(--radius-md);
+    font-weight: 500;
+    transition: all var(--transition-fast);
+}
+.workspace-nav .nav-link:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--text-primary);
+}
+.workspace-nav .nav-link.active {
+    background: linear-gradient(90deg, rgba(0, 112, 243, 0.2), transparent);
+    color: var(--blue-400);
+    border-left: 3px solid var(--blue-500);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+}
+.workspace-nav .nav-link i {
+    width: 24px;
+    display: inline-block;
+    text-align: center;
+}
+.footprint-card {
+    background: var(--surface-glass);
+    transition: all var(--transition-fast);
+}
+.footprint-active {
+    background: rgba(255, 255, 255, 0.05);
+    border-color: rgba(255, 255, 255, 0.2) !important;
+}
+.evidence-accordion .accordion-item {
+    background: var(--surface-card);
+}
+.evidence-accordion .accordion-button:not(.collapsed) {
+    background: rgba(0, 112, 243, 0.1) !important;
+    color: var(--blue-400);
+    box-shadow: none;
+}
+.evidence-accordion .accordion-button:focus {
+    box-shadow: none;
+}
+.evidence-accordion .accordion-button::after {
+    filter: invert(1) grayscale(100%) brightness(200%);
+}
+
 @media (max-width: 576px) {
     .report-actions {
         flex-direction: column;
