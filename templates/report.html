@@ -411,7 +411,7 @@
                                         <div class="col-md-4 col-sm-6">
                                             <div class="p-3 border border-secondary rounded d-flex align-items-center justify-content-between h-100 footprint-card {% if found %}footprint-active{% endif %}">
                                                 <div class="d-flex align-items-center">
-                                                    <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width:40px; height:40px; background:rgba(255,255,255,0.05);">
+                                                    <div class="rounded-circle d-flex align-items-center justify-content-center me-3" style="width:40px; height:40px; background:var(--bg-glass-hover);">
                                                         <i class="bi {{ icon }} fs-4 {% if found %}text-white{% else %}text-muted{% endif %}"></i>
                                                     </div>
                                                     <span class="fw-bold {% if not found %}text-muted{% endif %}">{{ name }}</span>
@@ -450,7 +450,7 @@
                                 <span><i class="bi bi-diagram-3 me-2"></i>Entity Network Graph</span>
                                 <button class="btn btn-sm btn-outline-secondary" onclick="document.getElementById('graph-container').requestFullscreen()"><i class="bi bi-arrows-fullscreen"></i> Fullscreen</button>
                             </div>
-                            <div class="report-card-body p-0" id="graph-container" style="min-height: 600px; background: #0A0A0A; display: flex; align-items: center; justify-content: center;">
+                            <div class="report-card-body p-0" id="graph-container" style="min-height: 600px; background: var(--bg-primary); display: flex; align-items: center; justify-content: center;">
                                 {% if graph_html %}
                                     <div id="plotly-graph-wrapper" style="width:100%; height:100%; min-height: 600px;">
                                         {{ graph_html|safe }}
