@@ -1,26 +1,72 @@
 # OSINT-Lite
 
-**Open Source Intelligence and Due Diligence Investigation Dashboard**
-
-OSINT-Lite is a lightweight, modular intelligence platform designed for junior investigators and due diligence analysts. It aggregates publicly available data from multiple sources, performs automated risk scoring, and generates professional PDF investigation reports — all from a single web interface.
+A professional Due Diligence / OSINT Investigation Platform inspired by enterprise investigation workflows, designed for analysts and investigators to aggregate and analyze public intelligence from a single interface.
 
 ---
 
 ## Features
 
-- **GitHub Intelligence** — Retrieves public profile data, repository counts, follower metrics, and account creation dates via the GitHub REST API.
-- **Username Enumeration** — Checks for the existence of a username across GitHub, GitLab, Reddit, Medium, and Pinterest.
-- **Domain / WHOIS Intelligence** — Performs WHOIS lookups to extract registrar, creation date, expiration date, country, and domain age.
-- **Risk Scoring Engine** — Computes a composite risk score (0–100) based on digital footprint signals, classifying subjects as Low, Medium, or High risk.
-- **PDF Report Export** — Generates a professional, download-ready PDF investigation report using ReportLab.
-- **Modern Dashboard UI** — Responsive, dark-themed interface built with Bootstrap 5 and custom CSS.
+- User Authentication
+- Dashboard
+- Case Management
+- Investigation Workspace
+- GitHub Intelligence
+- Professional Profile Intelligence
+- Company Intelligence
+- Court Record Analysis
+- News Screening
+- HIBP Email Breach Lookup
+- Social Media Intelligence
+- Network Graph Visualization
+- Risk Assessment Engine
+- PDF Report Export
+- DOCX Report Export
+- REST API
+- Batch Investigations
+- Dark / Light Theme
+
+---
+
+## Screenshots
+
+<!-- Add placeholders for screenshots -->
+![Dashboard](https://via.placeholder.com/800x400?text=Dashboard+Screenshot)
+
+![Investigation Workspace](https://via.placeholder.com/800x400?text=Investigation+Workspace+Screenshot)
+
+![Network Graph](https://via.placeholder.com/800x400?text=Network+Graph+Screenshot)
+
+---
+
+## Technology Stack
+
+**Frontend:**
+- HTML
+- CSS
+- JavaScript
+- Bootstrap
+
+**Backend:**
+- Flask
+- SQLAlchemy
+- SQLite
+
+**Libraries:**
+- Plotly
+- NetworkX
+- BeautifulSoup
+- Requests
+- ReportLab
+- python-docx
+
+**Deployment:**
+- Render
 
 ---
 
 ## Installation
 
 ### Prerequisites
-
 - Python 3.11 or higher
 - pip
 
@@ -28,118 +74,65 @@ OSINT-Lite is a lightweight, modular intelligence platform designed for junior i
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-username/osint-lite.git
+git clone https://github.com/utsav3705/osint-lite.git
 cd osint-lite
 
 # Create a virtual environment (recommended)
 python -m venv venv
-source venv/bin/activate   # Linux/macOS
-venv\Scripts\activate      # Windows
 
-# Install dependencies
-pip install -r requirements.txt
+# Activate the virtual environment
+# Windows
+venv\Scripts\activate
+# macOS/Linux
+source venv/bin/activate
 ```
 
 ---
 
-## Usage
+## Local Development
 
+Run the application locally:
 ```bash
-# Start the development server
+pip install -r requirements.txt
 python app.py
 ```
 
-Open your browser and navigate to **http://127.0.0.1:5000/**
-
-1. Fill in one or more fields (Name, Username, Email, Company, Website).
-2. Click **Investigate**.
-3. Review the investigation report with risk scoring and intelligence findings.
-4. Click **Download PDF** to save a copy of the report.
+Access the platform at `http://127.0.0.1:5000`.
 
 ---
 
-## Requirements
+## Deployment
 
-| Package       | Version  | Purpose                    |
-|---------------|----------|----------------------------|
-| Flask         | ≥ 3.0    | Web framework              |
-| requests      | ≥ 2.31   | HTTP requests              |
-| python-whois  | ≥ 0.9    | WHOIS domain lookups       |
-| reportlab     | ≥ 4.0    | PDF report generation      |
-| pandas        | ≥ 2.1    | Data manipulation          |
+This application is ready to be deployed on **Render**. Ensure you set the `SECRET_KEY` environment variable in your Render dashboard and configure the build/start commands (using Gunicorn).
+- **Build Command:** `pip install -r requirements.txt`
+- **Start Command:** `gunicorn app:app`
 
 ---
 
 ## Project Structure
 
-```
-osint-lite/
-├── app.py                    # Flask application
-├── requirements.txt          # Python dependencies
-├── README.md
-├── modules/
-│   ├── github_search.py      # GitHub API intelligence
-│   ├── username_search.py    # Cross-platform username check
-│   ├── whois_lookup.py       # WHOIS domain analysis
-│   ├── risk_engine.py        # Risk scoring engine
-│   └── pdf_report.py         # PDF report generator
-├── templates/
-│   ├── base.html             # Base layout template
-│   ├── index.html            # Investigation form
-│   └── report.html           # Report display
-├── static/
-│   ├── css/style.css         # Custom styles
-│   └── js/main.js            # Client-side logic
-└── generated_reports/        # PDF output directory
-```
-
----
-
-## Screenshots
-
-> Screenshots will be added here.
+- `app.py`: Main Flask application and routing.
+- `models.py`: Database schema and ORM models.
+- `database.py`: Database configuration and initialization.
+- `api.py`: REST API endpoints.
+- `modules/`: Contains Python scripts for various OSINT tasks (Risk Assessment, Profile Lookups, AI Summaries, etc.).
+- `templates/`: HTML files for rendering the frontend pages.
+- `static/`: Custom CSS and JavaScript files.
+- `generated_reports/`: Storage for generated PDF and DOCX reports.
+- `uploads/`: Temporary storage for file processing (e.g., Court PDF parsing, CSV batch).
+- `requirements.txt`: Python dependencies.
 
 ---
 
 ## Future Improvements
 
-- [ ] Email breach lookup (Have I Been Pwned API)
-- [ ] Social media content analysis
-- [ ] LinkedIn intelligence module
-- [ ] Investigation history with SQLite persistence
-- [ ] Network graph visualization with NetworkX + Plotly
-- [ ] Dark/Light theme toggle
-- [ ] Multi-subject batch investigations
-- [ ] REST API endpoints for programmatic access
-- [ ] User authentication and case management
-- [ ] Export reports in DOCX format
+- Automated periodic continuous monitoring for active cases.
+- Direct integration with proprietary databases and public APIs like Shodan and VirusTotal.
+- Entity resolution to automatically cross-link profiles accurately.
+- Customizable report templates tailored for different legal requirements.
 
 ---
 
 ## License
 
-This project is licensed under the MIT License.
-
-```
 MIT License
-
-Copyright (c) 2026
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
-```
